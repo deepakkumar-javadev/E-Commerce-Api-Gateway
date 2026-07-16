@@ -1,0 +1,29 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: MACY-API-GATEWAY
+
+  cloud:
+    gateway:
+      routes:
+        - id: macy-user-service-route
+          uri: lb://MACY-USER-SERVICE
+          predicates:
+            - Path=/auth/**
+
+        - id: product-service-route
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/products/**
+
+        - id: order-service-route
+          uri: lb://ORDER-SERVICE
+          predicates:
+            - Path=/orders/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
