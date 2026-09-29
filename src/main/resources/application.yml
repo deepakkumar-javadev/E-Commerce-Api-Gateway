@@ -1,0 +1,101 @@
+spring:
+  application:
+    name: ECOM-API-GATEWAY
+
+  cloud:
+    gateway:
+
+      # CORS Configuration
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins:
+              - "http://localhost:9090"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - PATCH
+              - DELETE
+              - OPTIONS
+            allowedHeaders:
+              - "*"
+            allowCredentials: true
+
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+
+      routes:
+
+        # User Service
+        - id: user-service
+          uri: lb://ECOM-USER-SERVICE
+          predicates:
+            - Path=/auth/**
+
+        # Product Service
+        - id: product-service
+          uri: lb://ECOM-PRODUCT-SERVICE
+          predicates:
+            - Path=/product/**
+
+        # Inventory Service
+        - id: inventory-service
+          uri: lb://ECOM-INVENTORY-SERVICE
+          predicates:
+            - Path=/stock/**
+
+        # Cart Service
+        - id: cart-service
+          uri: lb://ECOM-CART-SERVICE
+          predicates:
+            - Path=/cart/**
+
+        # Order Service
+        - id: order-service
+          uri: lb://ECOM-ORDER-SERVICE
+          predicates:
+            - Path=/orders/**
+
+        # Payment Service
+        - id: payment-service
+          uri: lb://ECOM-PAYMENT-SERVICE
+          predicates:
+            - Path=/payments/**
+
+        # Notification Service
+        - id: notification-service
+          uri: lb://ECOM-NOTIFICATION-SERVICE
+          predicates:
+            - Path=/notifications/**
+
+server:
+  port: 8080
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+  instance:
+    prefer-ip-address: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+
+  endpoint:
+    health:
+      show-details: always
+
+info:
+  app:
+    name: ECOM-API-GATEWAY
+    description: API Gateway for Ecommerce Microservices
+    version: 1.0.0
